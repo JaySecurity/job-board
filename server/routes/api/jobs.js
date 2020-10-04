@@ -61,7 +61,7 @@ router.post('/', async (req, res) => {
       size: req.body.unit.size,
     },
     description: req.body.description,
-    scheduledTime: new Date(req.body.scheduledTime) || Date.now(),
+    scheduledTime: new Date(req.body.scheduledTime) || null,
     technician: req.body.technician,
     dispatchTime: new Date(req.body.dispatchTime) || null,
     completedTime: new Date(req.body.completedTime) || null,

@@ -69,7 +69,11 @@ const Job = (props) => {
               type='text'
               readOnly
               name='scheduledTime'
-              value={dateToMDY(new Date(props.data.scheduledTime))}
+              value={
+                props.data.scheduledTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : dateToMDY(new Date(props.data.scheduledTime))
+              }
             />
           </div>
           <div className='form-group'>
@@ -188,7 +192,11 @@ const Job = (props) => {
               type='text'
               name='dispatchTime'
               readOnly
-              value={dateToMDY(new Date(props.data.dispatchTime))}
+              value={
+                props.data.dispatchTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : dateToMDY(new Date(props.data.dispatchTime))
+              }
             />
           </div>
           <div className='form-group'>
@@ -197,7 +205,11 @@ const Job = (props) => {
               type='text'
               readOnly
               name='completedTime'
-              value={dateToMDY(new Date(props.data.completedTime))}
+              value={
+                props.data.completedTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : dateToMDY(new Date(props.data.completedTime))
+              }
             />
           </div>
           <div className='form-group'>
