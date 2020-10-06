@@ -51,6 +51,7 @@ const Job = (props) => {
               type='text'
               name='timeIn'
               readOnly
+              size='11'
               value={dateToMDY(new Date(props.data.timeIn))}
             />
           </div>
@@ -59,6 +60,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
+              size='12'
               name='customer.location'
               value={props.data.customer.location}
             />
@@ -69,6 +71,7 @@ const Job = (props) => {
               type='text'
               readOnly
               name='scheduledTime'
+              size='11'
               value={
                 props.data.scheduledTime === '1970-01-01T00:00:00.000Z'
                   ? ''
@@ -78,7 +81,7 @@ const Job = (props) => {
           </div>
           <div className='form-group'>
             <label>Status:</label>
-            <select name='status' readOnly value={props.data.status.priority}>
+            <select name='status' value={props.data.status.priority} readOnly>
               <option value={RUSH.priority}>{RUSH.text}</option>
               <option value={PARKED.priority}>{PARKED.text}</option>
               <option value={PENDING.priority}>{PENDING.text}</option>
@@ -87,6 +90,68 @@ const Job = (props) => {
               <option value={CANCELLED.priority}>{CANCELLED.text}</option>
             </select>
           </div>
+
+          {/* ################################################################# */}
+          <div className='form-group'>
+            <label>Dispatched At:</label>
+            <input
+              type='text'
+              name='dispatchTime'
+              readOnly
+              size='11'
+              value={
+                props.data.dispatchTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : dateToMDY(new Date(props.data.dispatchTime))
+              }
+            />
+          </div>
+          <div className='form-group'>
+            <label>Completed At:</label>
+            <input
+              type='text'
+              readOnly
+              name='completedTime'
+              size='11'
+              value={
+                props.data.completedTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : dateToMDY(new Date(props.data.completedTime))
+              }
+            />
+          </div>
+          <div className='form-group'>
+            <label>Technician:</label>
+            <input
+              type='text'
+              readOnly
+              name='technician'
+              size='7'
+              value={props.data.tecnician}
+            />
+          </div>
+          <div className='form-group'>
+            <label>Work Order:</label>
+            <input
+              type='text'
+              readOnly
+              name='workOrder'
+              size='7'
+              value={props.data.workOrder}
+            />
+          </div>
+          <div className='form-group'>
+            <label>Invoice:</label>
+            <input
+              type='text'
+              readOnly
+              name='invoice'
+              size='7'
+              value={props.data.invoice}
+            />
+          </div>
+
+          {/* ################################################################# */}
           <div className='controls'>
             <button onClick={editJob}>Edit</button>
             <button data-visable='true' onClick={toggleJobBody}>
@@ -101,6 +166,7 @@ const Job = (props) => {
               type='text'
               name='customer.name'
               readOnly
+              size='16'
               value={props.data.customer.name}
             />
           </div>
@@ -180,13 +246,13 @@ const Job = (props) => {
           </div>
         </div>
         <div className='form-section job-body'>
-          <div className='form-group'>
+          <div className='form-group job-description'>
             <label>Notes:</label>
-            <textarea name='description' cols='145' rows='10'></textarea>
+            <textarea name='description' rows='5'></textarea>
           </div>
         </div>
         <div className='job-footer form-section'>
-          <div className='form-group'>
+          {/* <div className='form-group'>
             <label>Dispatched At::</label>
             <input
               type='text'
@@ -238,7 +304,7 @@ const Job = (props) => {
               name='invoice'
               value={props.data.invoice}
             />
-          </div>
+          </div> */}
         </div>
       </form>
     </div>
