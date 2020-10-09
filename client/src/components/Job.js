@@ -60,7 +60,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
-              size='12'
+              size='15'
               name='customer.location'
               value={props.data.customer.location}
             />
@@ -79,19 +79,6 @@ const Job = (props) => {
               }
             />
           </div>
-          <div className='form-group'>
-            <label>Status:</label>
-            <select name='status' value={props.data.status.priority} readOnly>
-              <option value={RUSH.priority}>{RUSH.text}</option>
-              <option value={PARKED.priority}>{PARKED.text}</option>
-              <option value={PENDING.priority}>{PENDING.text}</option>
-              <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
-              <option value={COMPLETE.priority}>{COMPLETE.text}</option>
-              <option value={CANCELLED.priority}>{CANCELLED.text}</option>
-            </select>
-          </div>
-
-          {/* ################################################################# */}
           <div className='form-group'>
             <label>Dispatched At:</label>
             <input
@@ -130,31 +117,21 @@ const Job = (props) => {
               value={props.data.tecnician}
             />
           </div>
+          
           <div className='form-group'>
-            <label>Work Order:</label>
-            <input
-              type='text'
-              readOnly
-              name='workOrder'
-              size='7'
-              value={props.data.workOrder}
-            />
+            <label>Status:</label>
+            <select name='status' value={props.data.status.priority} readOnly>
+              <option value={RUSH.priority}>{RUSH.text}</option>
+              <option value={PARKED.priority}>{PARKED.text}</option>
+              <option value={PENDING.priority}>{PENDING.text}</option>
+              <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
+              <option value={COMPLETE.priority}>{COMPLETE.text}</option>
+              <option value={CANCELLED.priority}>{CANCELLED.text}</option>
+            </select>
           </div>
-          <div className='form-group'>
-            <label>Invoice:</label>
-            <input
-              type='text'
-              readOnly
-              name='invoice'
-              size='7'
-              value={props.data.invoice}
-            />
-          </div>
-
-          {/* ################################################################# */}
           <div className='controls'>
-            <button onClick={editJob}>Edit</button>
-            <button data-visable='true' onClick={toggleJobBody}>
+            <button className='btn' onClick={editJob}>Edit</button>
+            <button className='btn' data-visable='true' onClick={toggleJobBody}>
               Collapse
             </button>
           </div>
@@ -166,7 +143,7 @@ const Job = (props) => {
               type='text'
               name='customer.name'
               readOnly
-              size='16'
+              size='32'
               value={props.data.customer.name}
             />
           </div>
@@ -176,6 +153,7 @@ const Job = (props) => {
               type='text'
               readOnly
               name='customer.caller'
+              size='15'
               value={props.data.customer.caller}
             />
           </div>
@@ -185,6 +163,7 @@ const Job = (props) => {
               type='text'
               readOnly
               name='customer.contactNumber'
+              size='17'
               value={props.data.customer.contactNumber}
             />
           </div>
@@ -194,9 +173,31 @@ const Job = (props) => {
               type='text'
               readOnly
               name='customer.purchaseOrder'
+              size='12'
               value={props.data.customer.purchaseOrder}
             />
           </div>
+          <div className='form-group'>
+            <label>Work Order:</label>
+            <input
+              type='text'
+              readOnly
+              name='workOrder'
+              size='8'
+              value={props.data.workOrder}
+            />
+          </div>
+          <div className='form-group'>
+            <label>Invoice:</label>
+            <input
+              type='text'
+              readOnly
+              name='invoice'
+              size='8'
+              value={props.data.invoice}
+            />
+            </div>
+            
         </div>
         <div className='unit-info form-section'>
           <div className='form-group'>
@@ -205,6 +206,7 @@ const Job = (props) => {
               type='text'
               name='unit.number'
               readOnly
+              size='20'
               value={props.data.unit.number}
             />
           </div>
@@ -213,6 +215,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
+              size='20'
               name='unit.make'
               value={props.data.unit.make}
             />
@@ -222,6 +225,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
+              size='20'
               name='unit.model'
               value={props.data.unit.model}
             />
@@ -231,6 +235,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
+              size='21'
               name='unit.size'
               value={props.data.unit.size}
             />
@@ -240,6 +245,7 @@ const Job = (props) => {
             <input
               type='text'
               readOnly
+              size='20'
               name='unit.position'
               value={props.data.unit.position}
             />
@@ -252,59 +258,6 @@ const Job = (props) => {
           </div>
         </div>
         <div className='job-footer form-section'>
-          {/* <div className='form-group'>
-            <label>Dispatched At::</label>
-            <input
-              type='text'
-              name='dispatchTime'
-              readOnly
-              value={
-                props.data.dispatchTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : dateToMDY(new Date(props.data.dispatchTime))
-              }
-            />
-          </div>
-          <div className='form-group'>
-            <label>Completed At:</label>
-            <input
-              type='text'
-              readOnly
-              name='completedTime'
-              value={
-                props.data.completedTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : dateToMDY(new Date(props.data.completedTime))
-              }
-            />
-          </div>
-          <div className='form-group'>
-            <label>Technician:</label>
-            <input
-              type='text'
-              readOnly
-              name='technician'
-              value={props.data.tecnician}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Work Order:</label>
-            <input
-              type='text'
-              readOnly
-              name='workOrder'
-              value={props.data.workOrder}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Invoice:</label>
-            <input
-              type='text'
-              readOnly
-              name='invoice'
-              value={props.data.invoice}
-            />
-          </div> */}
         </div>
       </form>
     </div>

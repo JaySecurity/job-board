@@ -4,6 +4,12 @@
   box-sizing: border-box;
   font: 15px 'Arial', sans-serif;
 }
+
+body {
+  background-color: rgb(44, 42, 42);
+  color: #c4bebe;
+}
+
 .nav-container {
   height: 100px;
   width: 100%;
@@ -11,10 +17,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-evenly;
-  margin-bottom: 1.5em;
+  margin-bottom: 0.5em;
 
   img {
-    height: 80%;
+    height: 90%;
     padding: 0.5em;
 
     // display: none;
@@ -38,14 +44,15 @@
   margin: 0.5em auto;
   display: flex;
   flex-direction: column;
+  color: black;
 }
 
 .job-item {
-  background-color: rgb(174, 177, 169);
+  background-color: rgb(149, 151, 147);
   padding: 0.75em;
 
   &:nth-child(even) {
-    background-color: beige;
+    background-color: rgb(184, 184, 180);
   }
 }
 .form-section {
@@ -56,14 +63,17 @@
 
 .form-group {
   display: flex;
-  width: 100%;
+  // width: 100%;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  margin: 0.5em 0.25em;
-  input {
+  margin: 0.25em 0.75em;
+  input,
+  select {
     max-height: 20px;
+    padding-left: 0.25em;
     background: #f7f2f2;
+    appearance: auto;
   }
 }
 
@@ -72,9 +82,21 @@
   width: 100%;
   textarea {
     width: 100%;
+    background: #f7f2f2;
   }
 }
-
+.controls {
+  flex-grow: 2;
+  display: flex;
+  justify-content: center;
+}
+.btn {
+  margin: 0.5em;
+  background-color: rgb(44, 42, 42);
+  padding: 0.5em 0.75em;
+  color: #f7f2f2;
+  border-radius: 5px;
+}
 .hide-section {
   display: none;
 }
