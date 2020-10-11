@@ -14,6 +14,8 @@ body {
 .nav-container {
   height: 100px;
   width: 100%;
+  position: fixed;
+  top: 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -28,6 +30,8 @@ body {
       -ms-flex-pack: space-evenly;
           justify-content: space-evenly;
   margin-bottom: 0.5em;
+  background-color: #1d1c1c;
+  z-index: 1;
 }
 
 .nav-container img {
@@ -56,7 +60,7 @@ body {
 
 .job-list {
   width: 1250px;
-  margin: 0.5em auto;
+  margin: 0 auto;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -84,6 +88,26 @@ body {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
+}
+
+.form-section .controls {
+  -webkit-box-flex: 2;
+      -ms-flex-positive: 2;
+          flex-grow: 2;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.form-section .btn {
+  margin: 0.5em;
+  background-color: #2c2a2a;
+  padding: 0.5em 0.75em;
+  color: #f7f2f2;
+  border-radius: 5px;
 }
 
 .form-group {
@@ -126,27 +150,112 @@ body {
   background: #f7f2f2;
 }
 
-.controls {
-  -webkit-box-flex: 2;
-      -ms-flex-positive: 2;
-          flex-grow: 2;
+.hide-section {
+  display: none;
+}
+
+.control-panel {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 1250px;
+  margin: 100px auto 0;
+}
+
+.control-panel .btn {
+  background-color: #959793;
+  border-radius: 5px;
+  color: black;
+  padding: 0.25em 0.5em;
+}
+
+.control-panel .control-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-}
-
-.btn {
+  height: 68px;
   margin: 0.5em;
-  background-color: #2c2a2a;
-  padding: 0.5em 0.75em;
-  color: #f7f2f2;
-  border-radius: 5px;
+  padding: 0.5em;
 }
 
-.hide-section {
-  display: none;
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  z-index: 0;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #959793;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: '';
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: black;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #959793;
+}
+
+input:focus + .slider {
+  -webkit-box-shadow: 0 0 1px #767774;
+          box-shadow: 0 0 1px #767774;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  transform: translateX(26px);
+  background-color: white;
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
 }
 /*# sourceMappingURL=App.css.map */

@@ -28,14 +28,14 @@ const Job = (props) => {
       event.target.innerHTML = 'Expand';
       event.target.dataset.visable = 'false';
       sections.forEach((section) => {
-        section.classList.toggle('form-section');
+        //section.classList.toggle('form-section');
         section.classList.toggle('hide-section');
       });
     } else {
       event.target.innerHTML = 'Collapse';
       event.target.dataset.visable = 'true';
       sections.forEach((section) => {
-        section.classList.toggle('form-section');
+       // section.classList.toggle('form-section');
         section.classList.toggle('hide-section');
       });
     }
@@ -130,8 +130,8 @@ const Job = (props) => {
             </select>
           </div>
           <div className='controls'>
-            <button className='btn' onClick={editJob}>Edit</button>
-            <button className='btn' data-visable='true' onClick={toggleJobBody}>
+            <button className='btn' data-_id ={props.data._id} onClick={editJob}>Edit</button>
+            <button className='btn' id='toggle' data-visable='true' onClick={toggleJobBody}>
               Collapse
             </button>
           </div>
