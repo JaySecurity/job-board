@@ -60,9 +60,24 @@ const ControlPanel = () => {
     e.target.dataset.visable === 'true' ? e.target.dataset.visable= 'false' : e.target.dataset.visable = 'true';
   }
 
+  const addJob = () =>{
+    return;
+  }
+
+  const refresh = () =>{
+    return;
+  }
 
   return (
     <div className="control-panel">
+
+<div className="control-group">
+        <button className='btn'onClick={refresh}>Refresh</button>
+      </div>
+
+      <div className="control-group">
+        <button className='btn'onClick={addJob}>New Job</button>
+      </div>
       <div className="control-group">
         <label>Time In:</label>
         <div className="control">
