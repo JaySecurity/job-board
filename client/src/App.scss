@@ -77,6 +77,19 @@ body {
     color: #f7f2f2;
     border-radius: 5px;
   }
+  .btn-edit {
+    a {
+      margin: 0.5em;
+      background-color: rgb(44, 42, 42);
+      padding: 0.5em 0.75em;
+      color: #f7f2f2;
+      border-radius: 5px;
+      display: block;
+      width: 48px;
+      height: 32px;
+      //text-align: center;
+    }
+  }
 }
 
 .form-group {
@@ -92,6 +105,7 @@ body {
     padding-left: 0.25em;
     background: #f7f2f2;
     appearance: auto;
+    border: none;
   }
 }
 
@@ -121,6 +135,15 @@ body {
     padding: 0.25em 0.5em;
   }
 
+  .btn-edit {
+    width: 48px;
+    height: 32px;
+    background-color: yellow;
+    // a {
+    //   box-sizing: border-box;
+    //   padding: 0.25em 0.5em;
+    // }
+  }
   .control-group {
     display: flex;
     flex-direction: column;
@@ -195,4 +218,9 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.add-job {
+  width: 1250px;
+  margin: 125px auto 0;
 }

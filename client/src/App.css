@@ -110,6 +110,17 @@ body {
   border-radius: 5px;
 }
 
+.form-section .btn-edit a {
+  margin: 0.5em;
+  background-color: #2c2a2a;
+  padding: 0.5em 0.75em;
+  color: #f7f2f2;
+  border-radius: 5px;
+  display: block;
+  width: 48px;
+  height: 32px;
+}
+
 .form-group {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -135,6 +146,7 @@ body {
   -webkit-appearance: auto;
      -moz-appearance: auto;
           appearance: auto;
+  border: none;
 }
 
 .job-description {
@@ -173,6 +185,12 @@ body {
   border-radius: 5px;
   color: black;
   padding: 0.25em 0.5em;
+}
+
+.control-panel .btn-edit {
+  width: 48px;
+  height: 32px;
+  background-color: yellow;
 }
 
 .control-panel .control-group {
@@ -257,5 +275,10 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.add-job {
+  width: 1250px;
+  margin: 125px auto 0;
 }
 /*# sourceMappingURL=App.css.map */

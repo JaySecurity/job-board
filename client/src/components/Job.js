@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { dateToMDY } from '../utils/';
 import {
@@ -11,11 +12,6 @@ import {
 } from '../utils/statusTypes';
 
 const Job = (props) => {
-  const editJob = (event) => {
-    event.preventDefault();
-    return null;
-  };
-
   const toggleJobBody = (event) => {
     event.preventDefault();
     const form = event.target.parentNode.parentNode.parentNode;
@@ -35,7 +31,7 @@ const Job = (props) => {
       event.target.innerHTML = 'Collapse';
       event.target.dataset.visable = 'true';
       sections.forEach((section) => {
-       // section.classList.toggle('form-section');
+        // section.classList.toggle('form-section');
         section.classList.toggle('hide-section');
       });
     }
@@ -114,10 +110,10 @@ const Job = (props) => {
               readOnly
               name='technician'
               size='7'
-              value={props.data.tecnician}
+              value={props.data.technician}
             />
           </div>
-          
+
           <div className='form-group'>
             <label>Status:</label>
             <select name='status' value={props.data.status.priority} readOnly>
@@ -130,8 +126,15 @@ const Job = (props) => {
             </select>
           </div>
           <div className='controls'>
-            <button className='btn' data-_id ={props.data._id} onClick={editJob}>Edit</button>
-            <button className='btn' id='toggle' data-visable='true' onClick={toggleJobBody}>
+            <div className='btn-edit'>
+              <Link to={`edit/${props.data._id}`}>Edit</Link>
+            </div>
+            <button
+              className='btn'
+              id='toggle'
+              data-visable='true'
+              onClick={toggleJobBody}
+            >
               Collapse
             </button>
           </div>
@@ -196,8 +199,7 @@ const Job = (props) => {
               size='8'
               value={props.data.invoice}
             />
-            </div>
-            
+          </div>
         </div>
         <div className='unit-info form-section'>
           <div className='form-group'>
@@ -254,11 +256,15 @@ const Job = (props) => {
         <div className='form-section job-body'>
           <div className='form-group job-description'>
             <label>Notes:</label>
-            <textarea name='description' rows='5'></textarea>
+            <textarea
+              name='description'
+              rows='5'
+              readOnly
+              value={props.data.description}
+            ></textarea>
           </div>
         </div>
-        <div className='job-footer form-section'>
-        </div>
+        <div className='job-footer form-section'></div>
       </form>
     </div>
   );

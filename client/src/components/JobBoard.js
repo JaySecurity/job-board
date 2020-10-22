@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
+import ControlPanel from './ControlPanel';
 import Job from './Job';
-import {JobContext} from '../context/JobContext';
+import { JobContext } from '../context/JobContext';
 
 const JobBoard = () => {
   const [jobs, setJobs] = useContext(JobContext);
@@ -10,21 +11,21 @@ const JobBoard = () => {
     axios
       .get('/api/jobs')
       .then((res) => {
-        setJobs([...jobs, ...res.data]);
+        setJobs([...res.data]);
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line
   }, []);
 
-  // jobs.sort((a,b) => a.status.priority - b.status.priority);
-
-
   return (
-    <div className='job-list'>
-       { jobs.map((job) => (
+    <>
+      <ControlPanel />
+      <div className='job-list'>
+        {jobs.map((job) => (
           <Job key={job._id} data={job} />
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   );
 };
 
