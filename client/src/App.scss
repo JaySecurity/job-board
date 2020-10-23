@@ -106,6 +106,7 @@ body {
     background: #f7f2f2;
     appearance: auto;
     border: none;
+    color: black;
   }
 }
 
@@ -115,6 +116,8 @@ body {
   textarea {
     width: 100%;
     background: #f7f2f2;
+    color: black;
+    padding: 0.25em 0.5em;
   }
 }
 .hide-section {
@@ -128,12 +131,12 @@ body {
   width: 1250px;
   margin: 100px auto 0;
 
-  .btn {
-    background-color: rgb(149, 151, 147);
-    border-radius: 5px;
-    color: black;
-    padding: 0.25em 0.5em;
-  }
+  // .btn {
+  //   background-color: rgb(149, 151, 147);
+  //   border-radius: 5px;
+  //   color: black;
+  //   padding: 0.25em 0.5em;
+  // }
 
   .btn-edit {
     width: 48px;
@@ -223,4 +226,15 @@ input:checked + .slider:before {
 .add-job {
   width: 1250px;
   margin: 125px auto 0;
+  .control-group {
+    display: flex;
+    justify-content: center;
+  }
+  .btn {
+    background-color: rgb(149, 151, 147);
+    border-radius: 5px;
+    color: black;
+    padding: 0.25em 0.5em;
+    margin: 1em;
+  }
 }

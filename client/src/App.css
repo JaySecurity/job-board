@@ -147,6 +147,7 @@ body {
      -moz-appearance: auto;
           appearance: auto;
   border: none;
+  color: black;
 }
 
 .job-description {
@@ -160,6 +161,8 @@ body {
 .job-description textarea {
   width: 100%;
   background: #f7f2f2;
+  color: black;
+  padding: 0.25em 0.5em;
 }
 
 .hide-section {
@@ -178,13 +181,6 @@ body {
           align-items: center;
   width: 1250px;
   margin: 100px auto 0;
-}
-
-.control-panel .btn {
-  background-color: #959793;
-  border-radius: 5px;
-  color: black;
-  padding: 0.25em 0.5em;
 }
 
 .control-panel .btn-edit {
@@ -280,5 +276,22 @@ input:checked + .slider:before {
 .add-job {
   width: 1250px;
   margin: 125px auto 0;
+}
+
+.add-job .control-group {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.add-job .btn {
+  background-color: #959793;
+  border-radius: 5px;
+  color: black;
+  padding: 0.25em 0.5em;
+  margin: 1em;
 }
 /*# sourceMappingURL=App.css.map */

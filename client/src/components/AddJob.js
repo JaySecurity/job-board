@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   RUSH,
   PARKED,
@@ -7,13 +8,30 @@ import {
   CANCELLED,
   INPROGRESS,
 } from '../utils/statusTypes';
+import { dateToMDY } from '../utils/';
 
 const AddJob = (props) => {
-  if (props.match.params._id != null) {
-    console.log(props.match.params._id);
-  } else {
-    console.log('add new job');
-  }
+  const [job, setJob] = useState({});
+
+  const changeTarget = (e) => {
+    //change target input
+    return;
+  };
+
+  useEffect(() => {
+    if (props.match.params._id != null) {
+      axios
+        .get(`/api/jobs/${props.match.params._id}`)
+        .then((res) => {
+          const job = res.data;
+          setJob(job);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      console.log('add new job');
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const add = () => {
     return;
@@ -32,33 +50,35 @@ const AddJob = (props) => {
             <input
               type='text'
               name='timeIn'
-              readOnly
               size='11'
-              //value={dateToMDY(new Date(props.data.timeIn))}
+              readOnly
+              value={!job.timeIn ? '' : dateToMDY(new Date(job.timeIn))}
             />
           </div>
           <div className='form-group'>
             <label>Location:</label>
             <input
               type='text'
-              readOnly
               size='15'
+              onChange={changeTarget}
               name='customer.location'
-              //value={props.data.customer.location}
+              defaultValue={job.customer?.location}
             />
           </div>
           <div className='form-group'>
             <label>Scheduled Time:</label>
             <input
               type='text'
-              readOnly
               name='scheduledTime'
               size='11'
-              /*value={
-                props.data.scheduledTime === '1970-01-01T00:00:00.000Z'
+              onChange={changeTarget}
+              value={
+                !job.scheduledTime
                   ? ''
-                  : dateToMDY(new Date(props.data.scheduledTime))
-              }*/
+                  : job.scheduledTime === '1970-01-01T00:00:00.000Z'
+                  ? ' '
+                  : dateToMDY(new Date(job.scheduledTime))
+              }
             />
           </div>
           <div className='form-group'>
@@ -66,37 +86,41 @@ const AddJob = (props) => {
             <input
               type='text'
               name='dispatchTime'
-              readOnly
               size='11'
-              // value={
-              //   props.data.dispatchTime === '1970-01-01T00:00:00.000Z'
-              //     ? ''
-              //     : dateToMDY(new Date(props.data.dispatchTime))
-              // }
+              onChange={changeTarget}
+              value={
+                !job.dispatchTime
+                  ? ''
+                  : job.dispatchTime === '1970-01-01T00:00:00.000Z'
+                  ? ' '
+                  : dateToMDY(new Date(job.dispatchTime))
+              }
             />
           </div>
           <div className='form-group'>
             <label>Completed At:</label>
             <input
               type='text'
-              readOnly
               name='completedTime'
               size='11'
-              // value={
-              //   props.data.completedTime === '1970-01-01T00:00:00.000Z'
-              //     ? ''
-              //     : dateToMDY(new Date(props.data.completedTime))
-              // }
+              onChange={changeTarget}
+              value={
+                !job.completedTime
+                  ? ''
+                  : job.completedTime === '1970-01-01T00:00:00.000Z'
+                  ? ' '
+                  : dateToMDY(new Date(job.completedTime))
+              }
             />
           </div>
           <div className='form-group'>
             <label>Technician:</label>
             <input
               type='text'
-              readOnly
               name='technician'
               size='7'
-              // value={props.data.tecnician}
+              onChange={changeTarget}
+              defaultValue={job.technician}
             />
           </div>
 
@@ -104,14 +128,19 @@ const AddJob = (props) => {
             <label>Status:</label>
             <select
               name='status'
-              /*value={props.data.status.priority}*/ readOnly
+              //onChange={changeTarget}
+              defaultValue={job.status?.priority}
             >
-              <option value={RUSH.priority}>{RUSH.text}</option>
-              <option value={PARKED.priority}>{PARKED.text}</option>
-              <option value={PENDING.priority}>{PENDING.text}</option>
-              <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
-              <option value={COMPLETE.priority}>{COMPLETE.text}</option>
-              <option value={CANCELLED.priority}>{CANCELLED.text}</option>
+              <option defaultValue={RUSH.priority}>{RUSH.text}</option>
+              <option defaultValue={PARKED.priority}>{PARKED.text}</option>
+              <option defaultValue={PENDING.priority}>{PENDING.text}</option>
+              <option defaultValue={INPROGRESS.priority}>
+                {INPROGRESS.text}
+              </option>
+              <option defaultValue={COMPLETE.priority}>{COMPLETE.text}</option>
+              <option defaultValue={CANCELLED.priority}>
+                {CANCELLED.text}
+              </option>
             </select>
           </div>
         </div>
@@ -121,59 +150,59 @@ const AddJob = (props) => {
             <input
               type='text'
               name='customer.name'
-              readOnly
               size='32'
-              // value={props.data.customer.name}
+              onChange={changeTarget}
+              defaultValue={job.customer?.name}
             />
           </div>
           <div className='form-group'>
             <label>Caller:</label>
             <input
               type='text'
-              readOnly
               name='customer.caller'
               size='15'
-              // value={props.data.customer.caller}
+              onChange={changeTarget}
+              defaultValue={job.customer?.caller}
             />
           </div>
           <div className='form-group'>
             <label>Contact Number:</label>
             <input
               type='text'
-              readOnly
               name='customer.contactNumber'
               size='17'
-              // value={props.data.customer.contactNumber}
+              onChange={changeTarget}
+              defaultValue={job.customer?.contactNumber}
             />
           </div>
           <div className='form-group'>
             <label>Purchase Order:</label>
             <input
               type='text'
-              readOnly
               name='customer.purchaseOrder'
               size='12'
-              // value={props.data.customer.purchaseOrder}
+              onChange={changeTarget}
+              defaultValue={job.customer?.purchaseOrder}
             />
           </div>
           <div className='form-group'>
             <label>Work Order:</label>
             <input
               type='text'
-              readOnly
               name='workOrder'
               size='8'
-              // value={props.data.workOrder}
+              onChange={changeTarget}
+              defaultValue={job.workOrder}
             />
           </div>
           <div className='form-group'>
             <label>Invoice:</label>
             <input
               type='text'
-              readOnly
               name='invoice'
               size='8'
-              // value={props.data.invoice}
+              onChange={changeTarget}
+              defaultValue={job.invoice}
             />
           </div>
         </div>
@@ -183,59 +212,64 @@ const AddJob = (props) => {
             <input
               type='text'
               name='unit.number'
-              readOnly
               size='20'
-              // value={props.data.unit.number}
+              onChange={changeTarget}
+              defaultValue={job.unit?.number}
             />
           </div>
           <div className='form-group'>
             <label>Make:</label>
             <input
               type='text'
-              readOnly
               size='20'
+              onChange={changeTarget}
               name='unit.make'
-              // value={props.data.unit.make}
+              defaultValue={job.unit?.make}
             />
           </div>
           <div className='form-group'>
             <label>Model:</label>
             <input
               type='text'
-              readOnly
               size='20'
+              onChange={changeTarget}
               name='unit.model'
-              // value={props.data.unit.model}
+              defaultValue={job.unit?.model}
             />
           </div>
           <div className='form-group'>
             <label>Size:</label>
             <input
               type='text'
-              readOnly
               size='21'
+              onChange={changeTarget}
               name='unit.size'
-              // value={props.data.unit.size}
+              defaultValue={job.unit?.size}
             />
           </div>
           <div className='form-group'>
             <label>Position:</label>
             <input
               type='text'
-              readOnly
               size='20'
+              onChange={changeTarget}
               name='unit.position'
-              // value={props.data.unit.position}
+              defaultValue={job.unit?.position}
             />
           </div>
         </div>
         <div className='form-section job-body'>
           <div className='form-group job-description'>
             <label>Notes:</label>
-            <textarea name='description' rows='5'></textarea>
+            <textarea
+              name='description'
+              rows='5'
+              onChange={changeTarget}
+              defaultValue={job.description}
+            ></textarea>
           </div>
         </div>
-        <div className='controls'>
+        <div className='control-group'>
           <button className='btn' onClick={add}>
             Add
           </button>
