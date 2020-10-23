@@ -11,27 +11,60 @@ import {
 import { dateToMDY } from '../utils/';
 
 const AddJob = (props) => {
-  const [job, setJob] = useState({});
+  const [job, setJob] = useState({
+    timeIn: "",
+    customer: {
+      name: '',
+      caller: '',
+      contactNumber: '',
+      location: '',
+      purchaseOrder: '',
+    },
+    unit: {
+      number: '',
+      make: '',
+      model: '',
+      position: '',
+      size: '',
+    },
+    description: '',
+    scheduledTime: '',
+    technician: '',
+    dispatchTime: '',
+    completedTime: '',
+    workOrder: '',
+    invoice: '',
+    status: {
+      priority: '',
+      text: '',
+    },
+  });
 
-  const changeTarget = (e) => {
-    //change target input
-    return;
-  };
-
+  
   useEffect(() => {
     if (props.match.params._id != null) {
       axios
-        .get(`/api/jobs/${props.match.params._id}`)
-        .then((res) => {
-          const job = res.data;
-          setJob(job);
-        })
-        .catch((err) => console.log(err));
+      .get(`/api/jobs/${props.match.params._id}`)
+      .then((res) => {
+        const job = res.data;
+        setJob(job);
+      })
+      .catch((err) => console.log(err));
     } else {
       console.log('add new job');
     }
     // eslint-disable-next-line
   }, []);
+  
+  const changeTarget = (e) => {
+    let newJob = job;
+    newJob[e.target.name] = e.target.value;
+    setJob(newJob);
+    
+    
+    return;
+  };
+
 
   const add = () => {
     return;
@@ -62,7 +95,7 @@ const AddJob = (props) => {
               size='15'
               onChange={changeTarget}
               name='customer.location'
-              defaultValue={job.customer?.location}
+              defaultValue={job.customer.location}
             />
           </div>
           <div className='form-group'>
@@ -129,7 +162,7 @@ const AddJob = (props) => {
             <select
               name='status'
               //onChange={changeTarget}
-              defaultValue={job.status?.priority}
+              defaultValue={job.status.priority}
             >
               <option defaultValue={RUSH.priority}>{RUSH.text}</option>
               <option defaultValue={PARKED.priority}>{PARKED.text}</option>
@@ -152,7 +185,7 @@ const AddJob = (props) => {
               name='customer.name'
               size='32'
               onChange={changeTarget}
-              defaultValue={job.customer?.name}
+              defaultValue={job.customer.name}
             />
           </div>
           <div className='form-group'>
@@ -162,7 +195,7 @@ const AddJob = (props) => {
               name='customer.caller'
               size='15'
               onChange={changeTarget}
-              defaultValue={job.customer?.caller}
+              defaultValue={job.customer.caller}
             />
           </div>
           <div className='form-group'>
@@ -172,7 +205,7 @@ const AddJob = (props) => {
               name='customer.contactNumber'
               size='17'
               onChange={changeTarget}
-              defaultValue={job.customer?.contactNumber}
+              defaultValue={job.customer.contactNumber}
             />
           </div>
           <div className='form-group'>
@@ -182,7 +215,7 @@ const AddJob = (props) => {
               name='customer.purchaseOrder'
               size='12'
               onChange={changeTarget}
-              defaultValue={job.customer?.purchaseOrder}
+              defaultValue={job.customer.purchaseOrder}
             />
           </div>
           <div className='form-group'>
@@ -214,7 +247,7 @@ const AddJob = (props) => {
               name='unit.number'
               size='20'
               onChange={changeTarget}
-              defaultValue={job.unit?.number}
+              defaultValue={job.unit.number}
             />
           </div>
           <div className='form-group'>
@@ -224,7 +257,7 @@ const AddJob = (props) => {
               size='20'
               onChange={changeTarget}
               name='unit.make'
-              defaultValue={job.unit?.make}
+              defaultValue={job.unit.make}
             />
           </div>
           <div className='form-group'>
@@ -234,7 +267,7 @@ const AddJob = (props) => {
               size='20'
               onChange={changeTarget}
               name='unit.model'
-              defaultValue={job.unit?.model}
+              defaultValue={job.unit.model}
             />
           </div>
           <div className='form-group'>
@@ -244,7 +277,7 @@ const AddJob = (props) => {
               size='21'
               onChange={changeTarget}
               name='unit.size'
-              defaultValue={job.unit?.size}
+              defaultValue={job.unit.size}
             />
           </div>
           <div className='form-group'>
@@ -254,7 +287,7 @@ const AddJob = (props) => {
               size='20'
               onChange={changeTarget}
               name='unit.position'
-              defaultValue={job.unit?.position}
+              defaultValue={job.unit.position}
             />
           </div>
         </div>
