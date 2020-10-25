@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Datetime from 'react-datetime';
+import moment from 'moment';
+import 'react-datetime/css/react-datetime.css'
 import {
   RUSH,
   PARKED,
@@ -12,7 +15,7 @@ import { dateToMDY } from '../utils/';
 
 const AddJob = (props) => {
   const [job, setJob] = useState({
-    timeIn: "",
+    timeIn: '',
     customer: {
       name: '',
       caller: '',
@@ -40,33 +43,42 @@ const AddJob = (props) => {
     },
   });
 
-  
+  const [scheduledTime, setSchedluedTime] = useState(!job.scheduledTime ? null : new Date(job.scheduledTime));
+  const [dispatchTime, setDispatchTime] = useState(!job.dispatchTime ? null : new Date(job.dispatchTime));
+  const [completedTime, setCompletedTime] = useState(!job.completedTime ? null : new Date(job.completedTime));
+
   useEffect(() => {
     if (props.match.params._id != null) {
       axios
-      .get(`/api/jobs/${props.match.params._id}`)
-      .then((res) => {
-        const job = res.data;
-        setJob(job);
-      })
-      .catch((err) => console.log(err));
+        .get(`/api/jobs/${props.match.params._id}`)
+        .then((res) => {
+          const job = res.data;
+          setJob(job);
+          setSchedluedTime(job.scheduledTime);
+          setDispatchTime(job.dispatchTime);
+          setCompletedTime(job.completedTime);
+        })
+        .catch((err) => console.log(err));
     } else {
       console.log('add new job');
     }
     // eslint-disable-next-line
   }, []);
+
   
   const changeTarget = (e) => {
     let newJob = job;
+    console.log(e.target);
+    console.log(e);
     newJob[e.target.name] = e.target.value;
     setJob(newJob);
-    
-    
+
     return;
   };
 
-
-  const add = () => {
+  const add = (e) => {
+    e.preventDefault();
+    console.log(job);
     return;
   };
 
@@ -85,6 +97,7 @@ const AddJob = (props) => {
               name='timeIn'
               size='11'
               readOnly
+              placeholder='Auto populated'
               value={!job.timeIn ? '' : dateToMDY(new Date(job.timeIn))}
             />
           </div>
@@ -100,50 +113,83 @@ const AddJob = (props) => {
           </div>
           <div className='form-group'>
             <label>Scheduled Time:</label>
-            <input
-              type='text'
-              name='scheduledTime'
-              size='11'
-              onChange={changeTarget}
+            <Datetime
+              dateFormat='MM-DD-YY'
+              timeFormat='HH:mm'
+              inputProps={{size: 14}}
               value={
+                !scheduledTime
+                  ? ''
+                  : scheduledTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : new Date(scheduledTime)
+              }
+              initialViewDate = {
                 !job.scheduledTime
                   ? ''
                   : job.scheduledTime === '1970-01-01T00:00:00.000Z'
-                  ? ' '
-                  : dateToMDY(new Date(job.scheduledTime))
+                  ? ''
+                  : dateToMDY(new Date(scheduledTime))
               }
+              onChange = {val => {setSchedluedTime(val);
+                                  let newJob = job;
+                                  newJob.scheduledTime = new Date(val);
+                                  setJob(newJob);
+                                }}
             />
           </div>
           <div className='form-group'>
             <label>Dispatched At:</label>
-            <input
-              type='text'
-              name='dispatchTime'
-              size='11'
-              onChange={changeTarget}
+            <Datetime
+              dateFormat='MM-DD-YY'
+              timeFormat='HH:mm'
+              inputProps={{size: 14}}
               value={
+                !dispatchTime
+                  ? ''
+                  : dispatchTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : new Date(dispatchTime)
+              }
+              initialViewDate = {
                 !job.dispatchTime
                   ? ''
                   : job.dispatchTime === '1970-01-01T00:00:00.000Z'
-                  ? ' '
-                  : dateToMDY(new Date(job.dispatchTime))
+                  ? ''
+                  : dateToMDY(new Date(dispatchTime))
               }
+              onChange = {val => {setDispatchTime(val);
+                let newJob = job;
+                newJob.dispatchTime = new Date(val);
+                setJob(newJob);
+              }}
             />
           </div>
           <div className='form-group'>
             <label>Completed At:</label>
-            <input
-              type='text'
-              name='completedTime'
-              size='11'
-              onChange={changeTarget}
+            <Datetime
+              dateFormat='MM-DD-YY'
+              timeFormat='HH:mm'
+              inputProps={{size: 14}}
               value={
+                !completedTime
+                  ? ''
+                  : completedTime === '1970-01-01T00:00:00.000Z'
+                  ? ''
+                  : new Date(completedTime)
+              }
+              initialViewDate = {
                 !job.completedTime
                   ? ''
                   : job.completedTime === '1970-01-01T00:00:00.000Z'
-                  ? ' '
-                  : dateToMDY(new Date(job.completedTime))
+                  ? ''
+                  : dateToMDY(new Date(completedTime))
               }
+              onChange = {val => {setCompletedTime(val);
+                let newJob = job;
+                newJob.completedTime = new Date(val);
+                setJob(newJob);
+              }}
             />
           </div>
           <div className='form-group'>

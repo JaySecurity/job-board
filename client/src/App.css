@@ -140,13 +140,17 @@ body {
 
 .form-group input,
 .form-group select {
-  max-height: 20px;
+  height: 20px;
   padding-left: 0.25em;
   background: #f7f2f2;
   -webkit-appearance: auto;
      -moz-appearance: auto;
           appearance: auto;
   border: none;
+  color: black;
+}
+
+.form-group table {
   color: black;
 }
 
@@ -293,5 +297,14 @@ input:checked + .slider:before {
   color: black;
   padding: 0.25em 0.5em;
   margin: 1em;
+}
+
+.react-datetime-picker__wrapper {
+  border: none;
+  height: 20px;
+}
+
+.react-datetime-picker__wrapper .react-datetime-picker__button {
+  padding: 0 6px;
 }
 /*# sourceMappingURL=App.css.map */
