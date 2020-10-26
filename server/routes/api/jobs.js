@@ -61,10 +61,10 @@ router.post('/', async (req, res) => {
       size: req.body.unit.size,
     },
     description: req.body.description,
-    scheduledTime: new Date(req.body.scheduledTime) || null,
     technician: req.body.technician,
-    dispatchTime: new Date(req.body.dispatchTime) || null,
-    completedTime: new Date(req.body.completedTime) || null,
+    scheduledTime: new Date(req.body.scheduledTime),
+    dispatchTime: new Date(req.body.dispatchTime),
+    completedTime: new Date(req.body.completedTime),
     workOrder: req.body.workOrder,
     invoice: req.body.invoice,
     status: {
@@ -84,7 +84,7 @@ router.post('/', async (req, res) => {
 // @desc Update a Job
 // @access Public --set to private after auth system is complete.
 
-router.put('/:id', async (req, res) => {
+router.put('/:_id', async (req, res) => {
   const jobID = req.body._id; //may rename after UI implimented
   let updatedJob = {
     customer: {
@@ -102,10 +102,10 @@ router.put('/:id', async (req, res) => {
       size: req.body.unit.size,
     },
     description: req.body.description,
-    scheduledTime: new Date(req.body.scheduledTime),
     technician: req.body.technician,
-    dispatchTime: new Date(req.body.dispatchTime) || null,
-    completedTime: new Date(req.body.completedTime) || null,
+    scheduledTime: new Date(req.body.scheduledTime),
+    dispatchTime: new Date(req.body.dispatchTime),
+    completedTime: new Date(req.body.completedTime),
     workOrder: req.body.workOrder,
     invoice: req.body.invoice,
     status: {
@@ -114,7 +114,10 @@ router.put('/:id', async (req, res) => {
     },
   };
   try {
-    updatedJob = await Job.findByIdAndUpdate(jobID, updatedJob, { new: true });
+    updatedJob = await Job.findByIdAndUpdate(jobID, updatedJob, {
+      new: true,
+      upsert: true,
+    });
   } catch (err) {
     console.log(err);
   }
