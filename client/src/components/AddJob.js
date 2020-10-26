@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Datetime from 'react-datetime';
-import moment from 'moment';
-import 'react-datetime/css/react-datetime.css'
+// import moment from 'moment';
+import 'react-datetime/css/react-datetime.css';
 import {
   RUSH,
   PARKED,
@@ -31,10 +31,10 @@ const AddJob = (props) => {
       size: '',
     },
     description: '',
-    scheduledTime: '',
+    scheduledTime: null,
     technician: '',
-    dispatchTime: '',
-    completedTime: '',
+    dispatchTime: null,
+    completedTime: null,
     workOrder: '',
     invoice: '',
     status: {
@@ -43,9 +43,15 @@ const AddJob = (props) => {
     },
   });
 
-  const [scheduledTime, setSchedluedTime] = useState(!job.scheduledTime ? null : new Date(job.scheduledTime));
-  const [dispatchTime, setDispatchTime] = useState(!job.dispatchTime ? null : new Date(job.dispatchTime));
-  const [completedTime, setCompletedTime] = useState(!job.completedTime ? null : new Date(job.completedTime));
+  const [scheduledTime, setSchedluedTime] = useState(
+    !job.scheduledTime ? null : new Date(job.scheduledTime)
+  );
+  const [dispatchTime, setDispatchTime] = useState(
+    !job.dispatchTime ? null : new Date(job.dispatchTime)
+  );
+  const [completedTime, setCompletedTime] = useState(
+    !job.completedTime ? null : new Date(job.completedTime)
+  );
 
   useEffect(() => {
     if (props.match.params._id != null) {
@@ -59,27 +65,40 @@ const AddJob = (props) => {
           setCompletedTime(job.completedTime);
         })
         .catch((err) => console.log(err));
-    } else {
-      console.log('add new job');
     }
     // eslint-disable-next-line
   }, []);
 
-  
+  function nestedObjectGetUpdate(data, field, value) {
+    let schema = data; // a moving reference to internal objects within obj
+    const pList = field.split('.');
+    const len = pList.length;
+    for (var i = 0; i < len - 1; i++) {
+      var elem = pList[i];
+      if (!schema[elem]) schema[elem] = {};
+      schema = schema[elem];
+    }
+    if (!value) {
+      return schema[pList[len - 1]];
+    }
+    schema[pList[len - 1]] = value;
+  }
+
   const changeTarget = (e) => {
     let newJob = job;
-    console.log(e.target);
-    console.log(e);
-    newJob[e.target.name] = e.target.value;
+    nestedObjectGetUpdate(newJob, e.target.name, e.target.value);
     setJob(newJob);
-
     return;
   };
 
   const add = (e) => {
     e.preventDefault();
-    console.log(job);
-    return;
+
+    if (job._id) {
+      axios.put(`/api/jobs/${job._id}`, job).catch((err) => console.log(err));
+    } else {
+      axios.post(`/api/jobs/`, job).catch((err) => console.log(err));
+    }
   };
 
   const cancel = () => {
@@ -107,8 +126,11 @@ const AddJob = (props) => {
               type='text'
               size='15'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               name='customer.location'
-              defaultValue={job.customer.location}
+              defaultValue={job.customer?.location}
             />
           </div>
           <div className='form-group'>
@@ -116,7 +138,7 @@ const AddJob = (props) => {
             <Datetime
               dateFormat='MM-DD-YY'
               timeFormat='HH:mm'
-              inputProps={{size: 14}}
+              inputProps={{ size: 14, name: 'scheduledTime' }}
               value={
                 !scheduledTime
                   ? ''
@@ -124,18 +146,22 @@ const AddJob = (props) => {
                   ? ''
                   : new Date(scheduledTime)
               }
-              initialViewDate = {
+              initialViewDate={
                 !job.scheduledTime
                   ? ''
                   : job.scheduledTime === '1970-01-01T00:00:00.000Z'
                   ? ''
                   : dateToMDY(new Date(scheduledTime))
               }
-              onChange = {val => {setSchedluedTime(val);
-                                  let newJob = job;
-                                  newJob.scheduledTime = new Date(val);
-                                  setJob(newJob);
-                                }}
+              onChange={(val) => {
+                setSchedluedTime(val);
+                let newJob = job;
+                newJob.scheduledTime = new Date(val);
+                setJob(newJob);
+              }}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
             />
           </div>
           <div className='form-group'>
@@ -143,7 +169,7 @@ const AddJob = (props) => {
             <Datetime
               dateFormat='MM-DD-YY'
               timeFormat='HH:mm'
-              inputProps={{size: 14}}
+              inputProps={{ size: 14, name: 'dispatchTime' }}
               value={
                 !dispatchTime
                   ? ''
@@ -151,17 +177,21 @@ const AddJob = (props) => {
                   ? ''
                   : new Date(dispatchTime)
               }
-              initialViewDate = {
+              initialViewDate={
                 !job.dispatchTime
                   ? ''
                   : job.dispatchTime === '1970-01-01T00:00:00.000Z'
                   ? ''
                   : dateToMDY(new Date(dispatchTime))
               }
-              onChange = {val => {setDispatchTime(val);
+              onChange={(val) => {
+                setDispatchTime(val);
                 let newJob = job;
                 newJob.dispatchTime = new Date(val);
                 setJob(newJob);
+              }}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
               }}
             />
           </div>
@@ -170,7 +200,7 @@ const AddJob = (props) => {
             <Datetime
               dateFormat='MM-DD-YY'
               timeFormat='HH:mm'
-              inputProps={{size: 14}}
+              inputProps={{ size: 14, name: 'completedTime' }}
               value={
                 !completedTime
                   ? ''
@@ -178,17 +208,21 @@ const AddJob = (props) => {
                   ? ''
                   : new Date(completedTime)
               }
-              initialViewDate = {
+              initialViewDate={
                 !job.completedTime
                   ? ''
                   : job.completedTime === '1970-01-01T00:00:00.000Z'
                   ? ''
                   : dateToMDY(new Date(completedTime))
               }
-              onChange = {val => {setCompletedTime(val);
+              onChange={(val) => {
+                setCompletedTime(val);
                 let newJob = job;
                 newJob.completedTime = new Date(val);
                 setJob(newJob);
+              }}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
               }}
             />
           </div>
@@ -199,6 +233,9 @@ const AddJob = (props) => {
               name='technician'
               size='7'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               defaultValue={job.technician}
             />
           </div>
@@ -208,7 +245,10 @@ const AddJob = (props) => {
             <select
               name='status'
               //onChange={changeTarget}
-              defaultValue={job.status.priority}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.status?.priority}
             >
               <option defaultValue={RUSH.priority}>{RUSH.text}</option>
               <option defaultValue={PARKED.priority}>{PARKED.text}</option>
@@ -231,7 +271,10 @@ const AddJob = (props) => {
               name='customer.name'
               size='32'
               onChange={changeTarget}
-              defaultValue={job.customer.name}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.customer?.name}
             />
           </div>
           <div className='form-group'>
@@ -241,7 +284,10 @@ const AddJob = (props) => {
               name='customer.caller'
               size='15'
               onChange={changeTarget}
-              defaultValue={job.customer.caller}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.customer?.caller}
             />
           </div>
           <div className='form-group'>
@@ -251,7 +297,10 @@ const AddJob = (props) => {
               name='customer.contactNumber'
               size='17'
               onChange={changeTarget}
-              defaultValue={job.customer.contactNumber}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.customer?.contactNumber}
             />
           </div>
           <div className='form-group'>
@@ -261,7 +310,10 @@ const AddJob = (props) => {
               name='customer.purchaseOrder'
               size='12'
               onChange={changeTarget}
-              defaultValue={job.customer.purchaseOrder}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.customer?.purchaseOrder}
             />
           </div>
           <div className='form-group'>
@@ -271,6 +323,9 @@ const AddJob = (props) => {
               name='workOrder'
               size='8'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               defaultValue={job.workOrder}
             />
           </div>
@@ -281,6 +336,9 @@ const AddJob = (props) => {
               name='invoice'
               size='8'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               defaultValue={job.invoice}
             />
           </div>
@@ -293,7 +351,10 @@ const AddJob = (props) => {
               name='unit.number'
               size='20'
               onChange={changeTarget}
-              defaultValue={job.unit.number}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
+              defaultValue={job.unit?.number}
             />
           </div>
           <div className='form-group'>
@@ -302,8 +363,11 @@ const AddJob = (props) => {
               type='text'
               size='20'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               name='unit.make'
-              defaultValue={job.unit.make}
+              defaultValue={job.unit?.make}
             />
           </div>
           <div className='form-group'>
@@ -312,8 +376,11 @@ const AddJob = (props) => {
               type='text'
               size='20'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               name='unit.model'
-              defaultValue={job.unit.model}
+              defaultValue={job.unit?.model}
             />
           </div>
           <div className='form-group'>
@@ -322,8 +389,11 @@ const AddJob = (props) => {
               type='text'
               size='21'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               name='unit.size'
-              defaultValue={job.unit.size}
+              defaultValue={job.unit?.size}
             />
           </div>
           <div className='form-group'>
@@ -332,8 +402,11 @@ const AddJob = (props) => {
               type='text'
               size='20'
               onChange={changeTarget}
+              onKeyPress={(e) => {
+                e.key === 'Enter' && e.preventDefault();
+              }}
               name='unit.position'
-              defaultValue={job.unit.position}
+              defaultValue={job.unit?.position}
             />
           </div>
         </div>
@@ -357,6 +430,14 @@ const AddJob = (props) => {
           </button>
         </div>
       </form>
+      {/* {
+        (document.getElementById('jobform').onkeypress = function (e) {
+          var key = e.charCode || e.keyCode || 0;
+          if (key == 13) {
+            e.preventDefault();
+          }
+        })
+      } */}
     </div>
   );
 };
