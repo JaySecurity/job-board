@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Datetime from 'react-datetime';
-// import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 import 'react-datetime/css/react-datetime.css';
 import {
   RUSH,
@@ -52,6 +52,7 @@ const AddJob = (props) => {
   const [completedTime, setCompletedTime] = useState(
     !job.completedTime ? null : new Date(job.completedTime)
   );
+  const [status, setStatus] = useState({});
 
   useEffect(() => {
     if (props.match.params._id != null) {
@@ -63,11 +64,14 @@ const AddJob = (props) => {
           setSchedluedTime(job.scheduledTime);
           setDispatchTime(job.dispatchTime);
           setCompletedTime(job.completedTime);
+          setStatus(job.status);
         })
         .catch((err) => console.log(err));
     }
     // eslint-disable-next-line
   }, []);
+
+  const refStatus = useRef();
 
   function nestedObjectGetUpdate(data, field, value) {
     let schema = data; // a moving reference to internal objects within obj
@@ -91,13 +95,38 @@ const AddJob = (props) => {
     return;
   };
 
+  const updateJobStatus = (e) => {
+    let newJob = job;
+    const value = refStatus.current.value;
+    const newStatus = {
+      priority: value,
+      text: refStatus.current[value - 1].innerText,
+    };
+    setStatus(newStatus);
+    newJob.status = newStatus;
+    setJob(newJob);
+    return;
+  };
+
   const add = (e) => {
     e.preventDefault();
 
     if (job._id) {
-      axios.put(`/api/jobs/${job._id}`, job).catch((err) => console.log(err));
+      axios
+        .put(`/api/jobs/${job._id}`, job)
+        .then((res) => {
+          console.log('status', res.status);
+          return <Redirect to='/' />;
+        })
+        .catch((err) => console.log(err));
     } else {
-      axios.post(`/api/jobs/`, job).catch((err) => console.log(err));
+      axios
+        .post(`/api/jobs/`, job)
+        .then((res) => {
+          console.log('status', res.status);
+          return <Redirect to='/' />;
+        })
+        .catch((err) => console.log(err));
     }
   };
 
@@ -130,7 +159,7 @@ const AddJob = (props) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
               name='customer.location'
-              defaultValue={job.customer?.location}
+              defaultValue={job.customer.location}
             />
           </div>
           <div className='form-group'>
@@ -244,22 +273,19 @@ const AddJob = (props) => {
             <label>Status:</label>
             <select
               name='status'
-              //onChange={changeTarget}
+              ref={refStatus}
+              onChange={updateJobStatus}
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.status?.priority}
+              value={status.priority}
             >
-              <option defaultValue={RUSH.priority}>{RUSH.text}</option>
-              <option defaultValue={PARKED.priority}>{PARKED.text}</option>
-              <option defaultValue={PENDING.priority}>{PENDING.text}</option>
-              <option defaultValue={INPROGRESS.priority}>
-                {INPROGRESS.text}
-              </option>
-              <option defaultValue={COMPLETE.priority}>{COMPLETE.text}</option>
-              <option defaultValue={CANCELLED.priority}>
-                {CANCELLED.text}
-              </option>
+              <option value={RUSH.priority}>{RUSH.text}</option>
+              <option value={PARKED.priority}>{PARKED.text}</option>
+              <option value={PENDING.priority}>{PENDING.text}</option>
+              <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
+              <option value={COMPLETE.priority}>{COMPLETE.text}</option>
+              <option value={CANCELLED.priority}>{CANCELLED.text}</option>
             </select>
           </div>
         </div>
@@ -274,7 +300,7 @@ const AddJob = (props) => {
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.customer?.name}
+              defaultValue={job.customer.name}
             />
           </div>
           <div className='form-group'>
@@ -287,7 +313,7 @@ const AddJob = (props) => {
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.customer?.caller}
+              defaultValue={job.customer.caller}
             />
           </div>
           <div className='form-group'>
@@ -300,7 +326,7 @@ const AddJob = (props) => {
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.customer?.contactNumber}
+              defaultValue={job.customer.contactNumber}
             />
           </div>
           <div className='form-group'>
@@ -313,7 +339,7 @@ const AddJob = (props) => {
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.customer?.purchaseOrder}
+              defaultValue={job.customer.purchaseOrder}
             />
           </div>
           <div className='form-group'>
@@ -354,7 +380,7 @@ const AddJob = (props) => {
               onKeyPress={(e) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
-              defaultValue={job.unit?.number}
+              defaultValue={job.unit.number}
             />
           </div>
           <div className='form-group'>
@@ -367,7 +393,7 @@ const AddJob = (props) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
               name='unit.make'
-              defaultValue={job.unit?.make}
+              defaultValue={job.unit.make}
             />
           </div>
           <div className='form-group'>
@@ -380,7 +406,7 @@ const AddJob = (props) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
               name='unit.model'
-              defaultValue={job.unit?.model}
+              defaultValue={job.unit.model}
             />
           </div>
           <div className='form-group'>
@@ -393,7 +419,7 @@ const AddJob = (props) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
               name='unit.size'
-              defaultValue={job.unit?.size}
+              defaultValue={job.unit.size}
             />
           </div>
           <div className='form-group'>
@@ -406,7 +432,7 @@ const AddJob = (props) => {
                 e.key === 'Enter' && e.preventDefault();
               }}
               name='unit.position'
-              defaultValue={job.unit?.position}
+              defaultValue={job.unit.position}
             />
           </div>
         </div>
