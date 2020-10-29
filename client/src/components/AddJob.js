@@ -112,22 +112,11 @@ const AddJob = (props) => {
     e.preventDefault();
 
     if (job._id) {
-      axios
-        .put(`/api/jobs/${job._id}`, job)
-        .then((res) => {
-          console.log('status', res.status);
-          return <Redirect to='/' />;
-        })
-        .catch((err) => console.log(err));
+      axios.put(`/api/jobs/${job._id}`, job).catch((err) => console.log(err));
     } else {
-      axios
-        .post(`/api/jobs/`, job)
-        .then((res) => {
-          console.log('status', res.status);
-          return <Redirect to='/' />;
-        })
-        .catch((err) => console.log(err));
+      axios.post(`/api/jobs/`, job).catch((err) => console.log(err));
     }
+    props.history.push('/');
   };
 
   const cancel = () => {
@@ -449,7 +438,7 @@ const AddJob = (props) => {
         </div>
         <div className='control-group'>
           <button className='btn' onClick={add}>
-            Add
+            {!props.match.params._id ? 'Add' : 'Update'}
           </button>
           <button className='btn' onClick={cancel}>
             Cancel
