@@ -5,7 +5,7 @@ import JobBoard from './components/JobBoard';
 import AddJob from './components/AddJob';
 // import ControlPanel from './components/ControlPanel';
 import { JobProvider } from './context/JobContext';
-import './App.css';
+import './App.scss';
 
 function App() {
   return (
