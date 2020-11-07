@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Datetime from 'react-datetime';
-import { Redirect } from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 import 'react-datetime/css/react-datetime.css';
 import {
   RUSH,
@@ -54,6 +54,9 @@ const AddJob = (props) => {
   );
   const [status, setStatus] = useState({});
 
+  const [isUpdated, setIsUpdated] = useState(false);
+  let fromAdd = false;
+
   useEffect(() => {
     if (props.match.params._id != null) {
       axios
@@ -90,8 +93,9 @@ const AddJob = (props) => {
 
   const changeTarget = (e) => {
     let newJob = job;
-    nestedObjectGetUpdate(newJob, e.target.name, e.target.value);
+    nestedObjectGetUpdate(newJob, e.target.name, e.target.value.toUpperCase());
     setJob(newJob);
+    setIsUpdated(true);
     return;
   };
 
@@ -105,356 +109,376 @@ const AddJob = (props) => {
     setStatus(newStatus);
     newJob.status = newStatus;
     setJob(newJob);
+    setIsUpdated(true);
     return;
   };
 
   const add = (e) => {
     e.preventDefault();
-
     if (job._id) {
       axios.put(`/api/jobs/${job._id}`, job).catch((err) => console.log(err));
     } else {
       axios.post(`/api/jobs/`, job).catch((err) => console.log(err));
     }
+    fromAdd = true;
     props.history.push('/');
   };
 
-  const cancel = () => {
-    return;
+  const cancel = (e) => {
+    e.preventDefault();
+    props.history.push('/');
   };
 
   return (
-    <div className='add-job'>
-      <form>
-        <div className='job-header form-section'>
-          <div className='form-group'>
-            <label>Time In:</label>
-            <input
-              type='text'
-              name='timeIn'
-              size='11'
-              readOnly
-              placeholder='Auto populated'
-              value={!job.timeIn ? '' : dateToMDY(new Date(job.timeIn))}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Location:</label>
-            <input
-              type='text'
-              size='15'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              name='customer.location'
-              defaultValue={job.customer.location}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Scheduled Time:</label>
-            <Datetime
-              dateFormat='MM-DD-YY'
-              timeFormat='HH:mm'
-              inputProps={{ size: 14, name: 'scheduledTime' }}
-              value={
-                !scheduledTime
-                  ? ''
-                  : scheduledTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : new Date(scheduledTime)
-              }
-              initialViewDate={
-                !job.scheduledTime
-                  ? ''
-                  : job.scheduledTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : dateToMDY(new Date(scheduledTime))
-              }
-              onChange={(val) => {
-                setSchedluedTime(val);
-                let newJob = job;
-                newJob.scheduledTime = new Date(val);
-                setJob(newJob);
-              }}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Dispatched At:</label>
-            <Datetime
-              dateFormat='MM-DD-YY'
-              timeFormat='HH:mm'
-              inputProps={{ size: 14, name: 'dispatchTime' }}
-              value={
-                !dispatchTime
-                  ? ''
-                  : dispatchTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : new Date(dispatchTime)
-              }
-              initialViewDate={
-                !job.dispatchTime
-                  ? ''
-                  : job.dispatchTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : dateToMDY(new Date(dispatchTime))
-              }
-              onChange={(val) => {
-                setDispatchTime(val);
-                let newJob = job;
-                newJob.dispatchTime = new Date(val);
-                setJob(newJob);
-              }}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Completed At:</label>
-            <Datetime
-              dateFormat='MM-DD-YY'
-              timeFormat='HH:mm'
-              inputProps={{ size: 14, name: 'completedTime' }}
-              value={
-                !completedTime
-                  ? ''
-                  : completedTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : new Date(completedTime)
-              }
-              initialViewDate={
-                !job.completedTime
-                  ? ''
-                  : job.completedTime === '1970-01-01T00:00:00.000Z'
-                  ? ''
-                  : dateToMDY(new Date(completedTime))
-              }
-              onChange={(val) => {
-                setCompletedTime(val);
-                let newJob = job;
-                newJob.completedTime = new Date(val);
-                setJob(newJob);
-              }}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Technician:</label>
-            <input
-              type='text'
-              name='technician'
-              size='7'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.technician}
-            />
-          </div>
+    <>
+      <Prompt
+        when={isUpdated}
+        message={() => {
+          return fromAdd ? fromAdd : 'Leave without saving changes?';
+        }}
+      />
+      <div className='add-job'>
+        <form>
+          <div className='job-header form-section'>
+            <div className='form-group'>
+              <label>Time In:</label>
+              <input
+                type='text'
+                name='timeIn'
+                size='11'
+                readOnly
+                placeholder='Auto populated'
+                value={!job.timeIn ? '' : dateToMDY(new Date(job.timeIn))}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Location:</label>
+              <input
+                type='text'
+                size='15'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                name='customer.location'
+                defaultValue={job.customer.location}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Scheduled Time:</label>
+              <Datetime
+                dateFormat='MM-DD-YY'
+                timeFormat='HH:mm'
+                inputProps={{
+                  size: 14,
+                  name: 'scheduledTime',
+                  autoComplete: 'off',
+                }}
+                value={
+                  !scheduledTime
+                    ? ''
+                    : scheduledTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : new Date(scheduledTime)
+                }
+                initialViewDate={
+                  !job.scheduledTime
+                    ? ''
+                    : job.scheduledTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : dateToMDY(new Date(scheduledTime))
+                }
+                onChange={(val) => {
+                  setSchedluedTime(val);
+                  let newJob = job;
+                  newJob.scheduledTime = new Date(val);
+                  setJob(newJob);
+                  setIsUpdated(true);
+                }}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Dispatched At:</label>
+              <Datetime
+                dateFormat='MM-DD-YY'
+                timeFormat='HH:mm'
+                inputProps={{
+                  size: 14,
+                  name: 'dispatchTime',
+                  autoComplete: 'off',
+                }}
+                value={
+                  !dispatchTime
+                    ? ''
+                    : dispatchTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : new Date(dispatchTime)
+                }
+                initialViewDate={
+                  !job.dispatchTime
+                    ? ''
+                    : job.dispatchTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : dateToMDY(new Date(dispatchTime))
+                }
+                onChange={(val) => {
+                  setDispatchTime(val);
+                  let newJob = job;
+                  newJob.dispatchTime = new Date(val);
+                  setJob(newJob);
+                  setIsUpdated(true);
+                }}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Completed At:</label>
+              <Datetime
+                dateFormat='MM-DD-YY'
+                timeFormat='HH:mm'
+                inputProps={{
+                  size: 14,
+                  name: 'completedTime',
+                  autoComplete: 'off',
+                }}
+                value={
+                  !completedTime
+                    ? ''
+                    : completedTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : new Date(completedTime)
+                }
+                initialViewDate={
+                  !job.completedTime
+                    ? ''
+                    : job.completedTime === '1970-01-01T00:00:00.000Z'
+                    ? ''
+                    : dateToMDY(new Date(completedTime))
+                }
+                onChange={(val) => {
+                  setCompletedTime(val);
+                  let newJob = job;
+                  newJob.completedTime = new Date(val);
+                  setJob(newJob);
+                  setIsUpdated(true);
+                }}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Technician:</label>
+              <input
+                type='text'
+                name='technician'
+                size='7'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.technician}
+              />
+            </div>
 
-          <div className='form-group'>
-            <label>Status:</label>
-            <select
-              name='status'
-              ref={refStatus}
-              onChange={updateJobStatus}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              value={status.priority}
-            >
-              <option value={RUSH.priority}>{RUSH.text}</option>
-              <option value={PARKED.priority}>{PARKED.text}</option>
-              <option value={PENDING.priority}>{PENDING.text}</option>
-              <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
-              <option value={COMPLETE.priority}>{COMPLETE.text}</option>
-              <option value={CANCELLED.priority}>{CANCELLED.text}</option>
-            </select>
+            <div className='form-group'>
+              <label>Status:</label>
+              <select
+                name='status'
+                ref={refStatus}
+                onChange={updateJobStatus}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                value={status.priority}
+              >
+                <option value={RUSH.priority}>{RUSH.text}</option>
+                <option value={PARKED.priority}>{PARKED.text}</option>
+                <option value={PENDING.priority}>{PENDING.text}</option>
+                <option value={INPROGRESS.priority}>{INPROGRESS.text}</option>
+                <option value={COMPLETE.priority}>{COMPLETE.text}</option>
+                <option value={CANCELLED.priority}>{CANCELLED.text}</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className='customer-info form-section'>
-          <div className='form-group'>
-            <label>Customer:</label>
-            <input
-              type='text'
-              name='customer.name'
-              size='32'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.customer.name}
-            />
+          <div className='customer-info form-section'>
+            <div className='form-group'>
+              <label>Customer:</label>
+              <input
+                type='text'
+                name='customer.name'
+                size='32'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.customer.name}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Caller:</label>
+              <input
+                type='text'
+                name='customer.caller'
+                size='15'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.customer.caller}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Contact Number:</label>
+              <input
+                type='text'
+                name='customer.contactNumber'
+                size='17'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.customer.contactNumber}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Purchase Order:</label>
+              <input
+                type='text'
+                name='customer.purchaseOrder'
+                size='12'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.customer.purchaseOrder}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Work Order:</label>
+              <input
+                type='text'
+                name='workOrder'
+                size='8'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.workOrder}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Invoice:</label>
+              <input
+                type='text'
+                name='invoice'
+                size='8'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.invoice}
+              />
+            </div>
           </div>
-          <div className='form-group'>
-            <label>Caller:</label>
-            <input
-              type='text'
-              name='customer.caller'
-              size='15'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.customer.caller}
-            />
+          <div className='unit-info form-section'>
+            <div className='form-group'>
+              <label>Unit Number:</label>
+              <input
+                type='text'
+                name='unit.number'
+                size='20'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                defaultValue={job.unit.number}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Make:</label>
+              <input
+                type='text'
+                size='20'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                name='unit.make'
+                defaultValue={job.unit.make}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Model:</label>
+              <input
+                type='text'
+                size='20'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                name='unit.model'
+                defaultValue={job.unit.model}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Size:</label>
+              <input
+                type='text'
+                size='21'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                name='unit.size'
+                defaultValue={job.unit.size}
+              />
+            </div>
+            <div className='form-group'>
+              <label>Position:</label>
+              <input
+                type='text'
+                size='20'
+                onChange={changeTarget}
+                onKeyPress={(e) => {
+                  e.key === 'Enter' && e.preventDefault();
+                }}
+                name='unit.position'
+                defaultValue={job.unit.position}
+              />
+            </div>
           </div>
-          <div className='form-group'>
-            <label>Contact Number:</label>
-            <input
-              type='text'
-              name='customer.contactNumber'
-              size='17'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.customer.contactNumber}
-            />
+          <div className='form-section job-body'>
+            <div className='form-group job-description'>
+              <label>Notes:</label>
+              <textarea
+                name='description'
+                rows='5'
+                onChange={changeTarget}
+                defaultValue={job.description}
+              ></textarea>
+            </div>
           </div>
-          <div className='form-group'>
-            <label>Purchase Order:</label>
-            <input
-              type='text'
-              name='customer.purchaseOrder'
-              size='12'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.customer.purchaseOrder}
-            />
+          <div className='control-group'>
+            <button className='btn' onClick={add}>
+              {!props.match.params._id ? 'Add' : 'Update'}
+            </button>
+            <button className='btn' onClick={cancel}>
+              Cancel
+            </button>
           </div>
-          <div className='form-group'>
-            <label>Work Order:</label>
-            <input
-              type='text'
-              name='workOrder'
-              size='8'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.workOrder}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Invoice:</label>
-            <input
-              type='text'
-              name='invoice'
-              size='8'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.invoice}
-            />
-          </div>
-        </div>
-        <div className='unit-info form-section'>
-          <div className='form-group'>
-            <label>Unit Number:</label>
-            <input
-              type='text'
-              name='unit.number'
-              size='20'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              defaultValue={job.unit.number}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Make:</label>
-            <input
-              type='text'
-              size='20'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              name='unit.make'
-              defaultValue={job.unit.make}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Model:</label>
-            <input
-              type='text'
-              size='20'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              name='unit.model'
-              defaultValue={job.unit.model}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Size:</label>
-            <input
-              type='text'
-              size='21'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              name='unit.size'
-              defaultValue={job.unit.size}
-            />
-          </div>
-          <div className='form-group'>
-            <label>Position:</label>
-            <input
-              type='text'
-              size='20'
-              onChange={changeTarget}
-              onKeyPress={(e) => {
-                e.key === 'Enter' && e.preventDefault();
-              }}
-              name='unit.position'
-              defaultValue={job.unit.position}
-            />
-          </div>
-        </div>
-        <div className='form-section job-body'>
-          <div className='form-group job-description'>
-            <label>Notes:</label>
-            <textarea
-              name='description'
-              rows='5'
-              onChange={changeTarget}
-              defaultValue={job.description}
-            ></textarea>
-          </div>
-        </div>
-        <div className='control-group'>
-          <button className='btn' onClick={add}>
-            {!props.match.params._id ? 'Add' : 'Update'}
-          </button>
-          <button className='btn' onClick={cancel}>
-            Cancel
-          </button>
-        </div>
-      </form>
-      {/* {
-        (document.getElementById('jobform').onkeypress = function (e) {
-          var key = e.charCode || e.keyCode || 0;
-          if (key == 13) {
-            e.preventDefault();
-          }
-        })
-      } */}
-    </div>
+        </form>
+      </div>
+    </>
   );
 };
 
 export default AddJob;
+function newFunction(setFromAdd) {
+  setFromAdd(true);
+}
