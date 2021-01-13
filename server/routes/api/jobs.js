@@ -9,15 +9,7 @@ const Job = require('../../models/Job');
 router.get('/', async (req, res) => {
   let jobs = {};
   try {
-    if (req.body.priority) {
-      jobs = await Job.find().sort({ 'status.priority': 1 });
-    } else if (req.body.byDate) {
-      jobs = await Job.find().sort({ timeIn: 1 });
-    } else if (req.body.byScheduleDate) {
-      jobs = await Job.find().sort({ scheduledTime: 1 });
-    } else {
-      jobs = await Job.find();
-    }
+    jobs = await Job.find().sort({ timeIn: 1 });
     return res.json(jobs);
   } catch (err) {
     console.log(err);

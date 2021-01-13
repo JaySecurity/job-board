@@ -1,14 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import { dateToMDY } from '../utils/';
 import {
-  RUSH,
+  CANCELLED,
+  COMPLETE,
+  INPROGRESS,
   PARKED,
   PENDING,
-  COMPLETE,
-  CANCELLED,
-  INPROGRESS,
+  RUSH,
 } from '../utils/statusTypes';
 
 const Job = (props) => {
@@ -20,16 +19,16 @@ const Job = (props) => {
       form.querySelector('.unit-info'),
     ];
 
-    if (event.target.dataset.visable === 'true') {
+    if (event.target.dataset.visible === 'true') {
       event.target.innerHTML = 'Expand';
-      event.target.dataset.visable = 'false';
+      event.target.dataset.visible = 'false';
       sections.forEach((section) => {
         //section.classList.toggle('form-section');
         section.classList.toggle('hide-section');
       });
     } else {
       event.target.innerHTML = 'Collapse';
-      event.target.dataset.visable = 'true';
+      event.target.dataset.visible = 'true';
       sections.forEach((section) => {
         // section.classList.toggle('form-section');
         section.classList.toggle('hide-section');
@@ -116,7 +115,11 @@ const Job = (props) => {
 
           <div className='form-group'>
             <label>Status:</label>
-            <select name='status' value={props.data.status.priority} readOnly>
+            <select
+              name='status'
+              value={props.data.status.priority || ''}
+              readOnly
+            >
               <option value={RUSH.priority}>{RUSH.text}</option>
               <option value={PARKED.priority}>{PARKED.text}</option>
               <option value={PENDING.priority}>{PENDING.text}</option>
@@ -130,9 +133,8 @@ const Job = (props) => {
               <Link to={`edit/${props.data._id}`}>Edit</Link>
             </div>
             <button
-              className='btn'
-              id='toggle'
-              data-visable='true'
+              className='btn toggle'
+              data-visible='true'
               onClick={toggleJobBody}
             >
               Collapse

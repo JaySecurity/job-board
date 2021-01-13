@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { JobContext } from '../context/JobContext';
@@ -5,7 +6,8 @@ import { JobContext } from '../context/JobContext';
 const ControlPanel = () => {
   const [jobs, setJobs] = useContext(JobContext);
   const sortJobs = (e) => {
-    switch (e.target.value) {
+    let sortBy = document.querySelector('input[name=sortBy]:checked').value;
+    switch (sortBy) {
       case 'byDate':
         jobs.sort((a, b) => new Date(a.timeIn) - new Date(b.timeIn));
         setJobs([...jobs]);
@@ -16,7 +18,7 @@ const ControlPanel = () => {
         );
         setJobs([...jobs]);
         break;
-      case 'priority':
+      case 'byPriority':
         jobs.sort((a, b) => a.status.priority - b.status.priority);
         setJobs([...jobs]);
         break;
@@ -32,18 +34,18 @@ const ControlPanel = () => {
         item.querySelector('.job-body'),
         item.querySelector('.unit-info'),
       ];
-      let button = item.querySelector('#toggle');
+      let button = item.querySelector('.toggle');
 
       sections.forEach((section) => {
-        if (e.target.dataset.visable === 'true') {
-          button.dataset.visable = 'false';
+        if (e.target.dataset.visible === 'true') {
+          button.dataset.visible = 'false';
           button.innerText = 'Expand';
           e.target.innerText = 'Expand All';
           if (!section.classList.contains('hide-section')) {
             section.classList.add('hide-section');
           }
         } else {
-          button.dataset.visable = 'true';
+          button.dataset.visible = 'true';
           button.innerText = 'Collapse';
           e.target.innerText = 'Collapse All';
           if (section.classList.contains('hide-section')) {
@@ -52,13 +54,20 @@ const ControlPanel = () => {
         }
       });
     });
-    e.target.dataset.visable === 'true'
-      ? (e.target.dataset.visable = 'false')
-      : (e.target.dataset.visable = 'true');
+    e.target.dataset.visible === 'true'
+      ? (e.target.dataset.visible = 'false')
+      : (e.target.dataset.visible = 'true');
   };
 
-  const refresh = () => {
-    return;
+  const refresh = (e) => {
+    e.preventDefault();
+    axios
+      .get('/api/jobs')
+      .then((res) => {
+        setJobs([...res.data]);
+        sortJobs();
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -112,14 +121,14 @@ const ControlPanel = () => {
               type='radio'
               name='sortBy'
               onChange={sortJobs}
-              value='priority'
+              value='byPriority'
             />
             <span className='slider round'></span>
           </label>
         </div>
       </div>
       <div className='control-group'>
-        <button className='btn' data-visable='true' onClick={toggleCollapse}>
+        <button className='btn' data-visible='true' onClick={toggleCollapse}>
           Collapse All
         </button>
       </div>

@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import Datetime from 'react-datetime';
-import { Prompt } from 'react-router-dom';
 import 'react-datetime/css/react-datetime.css';
+import { Prompt } from 'react-router-dom';
+import { dateToMDY } from '../utils/';
 import {
-  RUSH,
+  CANCELLED,
+  COMPLETE,
+  INPROGRESS,
   PARKED,
   PENDING,
-  COMPLETE,
-  CANCELLED,
-  INPROGRESS,
+  RUSH,
 } from '../utils/statusTypes';
-import { dateToMDY } from '../utils/';
 
 const AddJob = (props) => {
   const [job, setJob] = useState({
@@ -479,6 +479,6 @@ const AddJob = (props) => {
 };
 
 export default AddJob;
-function newFunction(setFromAdd) {
-  setFromAdd(true);
-}
+// function newFunction(setFromAdd) {
+//   setFromAdd(true);
+// }
